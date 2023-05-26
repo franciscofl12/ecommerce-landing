@@ -1,5 +1,6 @@
 import React from 'react';
 import Sorter from '../components/sorter';
+import Category from '../partials/Category';
 
 function ProductList() {
     return (
@@ -14,9 +15,10 @@ function ProductList() {
                         Premium Photos
                     </p>
                 </div>
-                <Sorter/>
+                <Sorter />
             </div>
-            
+                <Category />
+
         </section>
     );
 }

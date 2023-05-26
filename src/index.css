@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.product-image {
+    width: 280.00px;
+    height: 380.00px;
+    object-fit: cover;
+  }
