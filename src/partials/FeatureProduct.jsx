@@ -10,7 +10,7 @@ function FeatureProduct() {
                     <button className="font-archivo md:w-1/3 w-full text-base tracking-widest bg-black text-white py-2 px-8 uppercase">Add to cart</button>
                 </div>
                 <div className="relative py-6 col-span-2">
-                    <img src={imageDay} alt="Photo of the day" className="w-full" />
+                    <img src='https://gyazo.com/784307061eb5f953965c3c9998c7c63b.png' alt="Photo of the day" className="w-full" />
                     <div className="absolute bg-white flex items-center bottom-0 left-0 py-4 px-8">
                         <p className="font-archivo font-bold text-black text-base pb-4">
                             Photo of the day
