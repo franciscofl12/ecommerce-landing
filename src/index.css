@@ -48,3 +48,11 @@
   height: 37px;
 }
 
+li .MuiPaginationItem-ellipsis {
+  display: none;
+}
+
+.MuiPaginationItem-root.Mui-selected {
+  font-weight: bold;
+  background-color: white !important;
+}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Product from '../components/Product';
-import { Pagination } from 'flowbite-react';
+import usePagination from '@mui/material/usePagination';
+import { Pagination } from '@mui/material';
 
 function ProductList({ onAddToCart }) {
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -11,7 +12,9 @@ function ProductList({ onAddToCart }) {
     const [filterType, setFilterType] = useState('ASC');
     const [rotateIcon, setRotateIcon] = useState(false);
     const [menuVisible, setMenuVisible] = useState(false);
-    const [paginationData, setPaginationData] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(9);
+
     const categories = ['people', 'premium', 'pets', 'food', 'landmarks', 'cities', 'nature'];
 
     const handleCategoryChange = (category) => {
@@ -34,6 +37,10 @@ function ProductList({ onAddToCart }) {
         setSelectedCategories([]);
     };
 
+    const handlePaginationChange = (event, page) => {
+        setCurrentPage(page);
+    };
+
     const handleSortToggle = () => {
         const newFilterType = filterType === 'ASC' ? 'DESC' : 'ASC';
         setFilterType(newFilterType);
@@ -53,11 +60,12 @@ function ProductList({ onAddToCart }) {
                     };
 
                     const filteredResponse = await axios.post(
-                        'https://technical-frontend-api.bokokode.com/api/products',
+                        `https://technical-frontend-api.bokokode.com/api/products?page=${currentPage}`,
                         filterOptions
                     );
                     const filteredProducts = Object.values(filteredResponse.data);
                     setFilteredProducts(filteredProducts[0].data || []);
+                    setTotalPage(filteredProducts[0].last_page);
                     console.log('Productos filtrados: ', filteredProducts[0].data);
                 };
 
@@ -73,12 +81,12 @@ function ProductList({ onAddToCart }) {
 
 
                     const filteredResponse = await axios.post(
-                        'https://technical-frontend-api.bokokode.com/api/products',
+                        `https://technical-frontend-api.bokokode.com/api/products?page=${currentPage}`,
                         filterOptions
                     );
                     const filteredProducts = Object.values(filteredResponse.data);
                     setAllProducts(filteredProducts[0].data || []);
-                    console.log(filteredProducts[0]);
+                    setTotalPage(filteredProducts[0].last_page);
                 };
 
                 if (selectedCategories.length === 0) {
@@ -92,7 +100,7 @@ function ProductList({ onAddToCart }) {
         };
 
         fetchData();
-    }, [selectedCategories, selectedOption, filterType]);
+    }, [selectedCategories, selectedOption, filterType, currentPage]);
 
 
 
@@ -124,7 +132,7 @@ function ProductList({ onAddToCart }) {
                             }}
                             xmlns="http://www.w3.org/2000/svg"
                         >
-                            <g clip-path="url(#clip0_122_12)">
+                            <g clipPath="url(#clip0_122_12)">
                                 <path d="M3.64807 14.3734V1.5347L5.90435 3.79098C5.97793 3.86456 6.07296 3.90134 6.17106 3.90134C6.26916 3.90134 6.36419 3.86456 6.43777 3.79098C6.58492 3.64383 6.58492 3.40778 6.43777 3.26063L3.54077 0.363637C3.39976 0.222619 3.15144 0.222619 3.01042 0.363637L0.110362 3.26063C-0.0367873 3.40778 -0.0367873 3.64383 0.110362 3.79098C0.257511 3.93813 0.493562 3.93813 0.640711 3.79098L2.897 1.5347V14.3734C2.897 14.5819 3.0656 14.7505 3.27407 14.7505C3.47946 14.7474 3.64807 14.5788 3.64807 14.3734Z" fill="#9B9B9B" />
                                 <path d="M11.4592 14.6367C11.5328 14.7103 11.6278 14.7471 11.7259 14.7471C11.824 14.7471 11.919 14.7103 11.9926 14.6367L14.8896 11.7397C15.0368 11.5926 15.0368 11.3565 14.8896 11.2094C14.7425 11.0622 14.5064 11.0622 14.3593 11.2094L12.103 13.4657V0.626917C12.103 0.418456 11.9344 0.249847 11.7259 0.249847C11.5174 0.249847 11.3488 0.418456 11.3488 0.626917V13.4657L9.09561 11.2094C8.94846 11.0622 8.71241 11.0622 8.56526 11.2094C8.41811 11.3565 8.41811 11.5926 8.56526 11.7397L11.4592 14.6367Z" fill="#9B9B9B" />
                             </g>
@@ -212,51 +220,8 @@ function ProductList({ onAddToCart }) {
                     {(selectedCategories.length === 0 ? allProducts : filteredProducts).map((product) => (
                         <Product key={product._id} product={product} onAddToCart={onAddToCart} />
                     ))}
-                    <div className='md:col-span-2 xl:col-span-3 col-span-1 inline-flex'>
-                        <div>
-                            {/* Renderizar la paginación */}
-                            {paginationData && (
-                                <nav>
-                                    <ul className="pagination">
-                                        {/* Flecha de página anterior */}
-                                        {paginationData.links[0].url && (
-                                            <li className="page-item">
-                                                <button
-                                                    className="page-link"
-                                                    onClick={() => handlePageChange(paginationData.prev_page_url)}
-                                                >
-                                                    &laquo; Previous
-                                                </button>
-                                            </li>
-                                        )}
-
-                                        {/* Números de página */}
-                                        {paginationData.links.map((link) => (
-                                            <li key={link.label} className={`page-item ${link.active ? 'active' : ''}`}>
-                                                <button
-                                                    className="page-link"
-                                                    onClick={() => handlePageChange(link.url)}
-                                                >
-                                                    {link.label}
-                                                </button>
-                                            </li>
-                                        ))}
-
-                                        {/* Flecha de página siguiente */}
-                                        {paginationData.links[paginationData.links.length - 1].url && (
-                                            <li className="page-item">
-                                                <button
-                                                    className="page-link"
-                                                    onClick={() => handlePageChange(paginationData.next_page_url)}
-                                                >
-                                                    Next &raquo;
-                                                </button>
-                                            </li>
-                                        )}
-                                    </ul>
-                                </nav>
-                            )}
-                        </div>
+                    <div className='md:col-span-2 justify-center xl:col-span-3 py-4 col-span-1 inline-flex'>
+                        <Pagination count={totalPage} page={currentPage} onChange={handlePaginationChange} />
                     </div>
                 </div>
 
